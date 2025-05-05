@@ -1,0 +1,66 @@
+# Step 1: Import Required Python Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 2: Load the Dataset into pandas DataFrame
+# Make sure you have the dataset file in the same directory or provide the correct path to it
+dataset_path = 'data.csv'  # Replace with the actual file path if necessary
+df = pd.read_csv(dataset_path)
+
+# Step 3: Data Preprocessing
+
+# Checking for missing values using isnull()
+print("\nMissing Values in DataFrame:")
+print(df.isnull().sum())
+
+# Use describe() to get summary statistics of the dataset
+print("\nSummary Statistics of the DataFrame:")
+print(df.describe())
+
+# Checking the types of variables in the dataset
+print("\nData Types of the Variables:")
+print(df.dtypes)
+
+# Checking the dimensions of the DataFrame
+print("\nDimensions of the DataFrame:")
+print(df.shape)
+
+# Step 4: Data Formatting and Data Normalization
+
+# Summarize the types of variables by checking their data types
+# Convert any column that should be numeric but isn't to a numeric format
+# For example, if you have a column 'horsepower' that might contain non-numeric values:
+df['horsepower'] = pd.to_numeric(df['horsepower'], errors='coerce')
+
+# Normalize numerical columns (you can normalize multiple columns at once if needed)
+numeric_columns = df.select_dtypes(include=[np.number]).columns  # Select numerical columns
+for col in numeric_columns:
+    df[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())  # Min-Max Normalization
+
+# Check again the data types after conversion
+print("\nData Types After Conversion:")
+print(df.dtypes)
+
+# Step 5: Turning Categorical Variables into Quantitative Variables
+
+# Convert categorical variables (like 'origin', 'category', etc.) to numeric using one-hot encoding
+categorical_columns = df.select_dtypes(include=['object']).columns  # Identify categorical columns
+df = pd.get_dummies(df, columns=categorical_columns, drop_first=True)
+
+# Display the updated DataFrame
+print("\nDataFrame with Categorical Variables Converted:")
+print(df.head())
+
+# Step 6: Data Visualization - Plotting the Distribution of a Numerical Column
+# You can plot any column you wish. For example, let's plot the distribution of 'mpg' column
+# Make sure the column exists in your dataset; replace 'mpg' with the name of any relevant column in your dataset.
+
+if 'mpg' in df.columns:
+    plt.hist(df['mpg'], bins=10, color='blue', edgecolor='black')
+    plt.title('Distribution of MPG (Normalized)')
+    plt.xlabel('Normalized MPG')
+    plt.ylabel('Frequency')
+    plt.show()
+else:
+    print("Column 'mpg' not found for plotting.")
